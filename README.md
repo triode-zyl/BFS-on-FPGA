@@ -48,7 +48,7 @@ Speedup ratio: 0.571429
 
 Though I didn't test the program on FPGA boards, I believe there still are improving spaces. I will further optimize my codes in the future.
 
-## Reference
+## References
 
 https://github.com/Xilinx/Vitis_Accel_Examples
 
