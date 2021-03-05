@@ -71,7 +71,7 @@ static void traverse_cia(hls::stream<short> next_frontier_stream[], hls::stream<
     batch_t word = cia_stream.read();
   #pragma HLS PIPELINE II=1
   word0:
-    if(word[0]!=-1)
+    if(word.range(15,0)!=-1)
     {
       short tmp=word.range(15,0) >> BANK_BW;
       if(bitmap0[tmp]==0)
@@ -249,6 +249,25 @@ static void traverse_cia(hls::stream<short> next_frontier_stream[], hls::stream<
   }
 }
 
+void transfer(short *frontier, hls::stream<short> next_frontier_stream[], short *next_frontier_size, short &frontier_size)
+{
+    frontier_size=0;
+    int baseVec[BATCH];
+    baseVec[0]=0;
+		for(int i = 1; i < BATCH; i++){
+			baseVec[i] = baseVec[i - 1] + next_frontier_size[i - 1];
+		}
+    frontier_size=baseVec[BATCH-1]+next_frontier_size[BATCH-1];
+    for(int i=0;i<BATCH;i++)
+    {
+    #pragma HLS UNROLL
+      for(int j=0;j<next_frontier_size[i];j++)
+      {
+        frontier[baseVec[i]+j]=next_frontier_stream[i].read();
+      }
+    }
+    memset(next_frontier_size,0,sizeof(int)*BATCH);
+}
 
 extern "C" {
 
@@ -260,6 +279,7 @@ void bfs(rpa_t *RPA, batch_t *CIA, int ROOT) {
 #pragma HLS STREAM variable = CIA_stream depth = cia_depth
   static hls::stream<short> frontier_stream("frontier_stream");
   static hls::stream<short> next_frontier_stream[BATCH];
+#pragma HLS DATA_PACK variable = next_frontier_stream
 #pragma HLS STREAM variable = frontier_stream depth = c_size
 #pragma HLS STREAM variable = next_frontier_stream depth = next_frontier_depth
 
@@ -295,21 +315,7 @@ void bfs(rpa_t *RPA, batch_t *CIA, int ROOT) {
     read_rpa(RPA, frontier_stream, RPA_stream, frontier_size);
     read_cia(CIA, RPA_stream, CIA_stream, frontier_size);
     traverse_cia(next_frontier_stream, CIA_stream, next_frontier_size);
-    frontier_size=0;
-    int baseVec[BATCH];
-    baseVec[0]=0;
-		for(int i = 1; i < BATCH; i++){
-			baseVec[i] = baseVec[i - 1] + next_frontier_size[i - 1];
-		}
-    frontier_size=baseVec[BATCH-1]+next_frontier_size[BATCH-1];
-    for(int i=0;i<BATCH;i++)
-    {
-    #pragma HLS UNROLL
-      for(int j=0;j<next_frontier_size[i];j++)
-      {
-        frontier[baseVec[i]+j]=next_frontier_stream[i].read();
-      }
-    }
+    transfer(frontier, next_frontier_stream, next_frontier_size, frontier_size);
   }
 }
 }

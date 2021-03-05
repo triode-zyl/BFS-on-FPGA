@@ -4,6 +4,7 @@
 #include<ap_int.h>
 
 #define BATCH 16
+#define BANK_BW 4
 #define NODE_NUM 16384
 #define CIA_SIZE 1014784
 
