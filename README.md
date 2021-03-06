@@ -55,8 +55,7 @@ Though I didn't test the program on FPGA boards, I believe there still are impro
 Result on FPGA:
 
 ```
-cp -rf ./_x.hw.xilinx_u280_xdma_201920_3/emconfig.json .
-XCL_EMULATION_MODE=hw ./dataflow_stream ./build_dir.hw.xilinx_u280_xdma_201920_3/bfs.xclbin
+./dataflow_stream ./build_dir.hw.xilinx_u280_xdma_201920_3/bfs.xclbin
 Found Platform
 Platform Name: Xilinx
 INFO: Reading ./build_dir.hw.xilinx_u280_xdma_201920_3/bfs.xclbin
