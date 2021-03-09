@@ -52,20 +52,6 @@ Speedup ratio: 0.571429
 
 Though I didn't test the program on FPGA boards, I believe there still are improving spaces. I will further optimize my codes in the future.
 
-Result on FPGA:
-
-```
-./dataflow_stream ./build_dir.hw.xilinx_u280_xdma_201920_3/bfs.xclbin
-Found Platform
-Platform Name: Xilinx
-INFO: Reading ./build_dir.hw.xilinx_u280_xdma_201920_3/bfs.xclbin
-Loading: './build_dir.hw.xilinx_u280_xdma_201920_3/bfs.xclbin'
-Trying to program device[0]: xilinx_u280_xdma_201920_3
-Device[0]: program successful!
-Time on device: 10 ms
-Time on host: 12 ms
-Speedup ratio: 1.2
-```
 
 ## References
 
